@@ -39,6 +39,10 @@ Gz_prime = G(z_prime)
 cost = tf.reduce_mean((Gz - Gz_prime) * (Gz -Gz_prime))
 z_cost = tf.reduce_mean((z - z_prime) * (z - z_prime))
 
+L1G = tf.reduce_mean(tf.abs(Gz - Gz_prime))
+L1z = tf.reduce_mean(tf.abs(z - z_prime))
+
+
 optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate).minimize(cost)
 
 
@@ -49,8 +53,8 @@ sess.run(init)
 
 def run(iterations):
     for i in range(iterations):
-        _, G_error, z_error = sess.run([optimizer, cost, z_cost])
-        print("iteration: %s, G-loss: %s, Z-loss: %s" % (i, G_error, z_error))
+        _, G_error, z_error, real_L1G, real_L1z = sess.run([optimizer, cost, z_cost, L1G, L1z])
+        print("iteration: %s, G-loss: %s, Z-loss: %s, L1G: %s, L1z: %s, L1G/L1z: %s" % (i, G_error, z_error, real_L1G, real_L1z, real_L1G/real_L1z))
 
 
 if __name__ == "__main__":
